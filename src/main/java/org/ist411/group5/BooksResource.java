@@ -13,17 +13,11 @@ import javax.ws.rs.core.MediaType;
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
-import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
 import javax.json.JsonWriter;
-import javax.json.JsonReader;
 import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.FileInputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.io.*;
-import java.math.BigDecimal;
 /**
  * REST Web Service
  *
