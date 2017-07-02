@@ -58,6 +58,7 @@ public class BooksResource {
      *POST method writes an instance of BooksResource to the server
      */
     @POST
+    @Produces(MediaType.APPLICATION_JSON)
     public void postBook() {
         ArrayList<Book> bookList = new ArrayList();
         Book book1 = new Book("Brave New World", "Aldous Huxley", 9780060850524L);
