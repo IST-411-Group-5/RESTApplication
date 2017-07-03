@@ -122,7 +122,60 @@ public class BooksResource {
         } catch (IOException e){
             e.printStackTrace();
         }
-        return "<body>Success</body>";
+        return "<body>Success. Click <a href='localhost:8080/RESTApplication/webresources/books'>here</a> to see all books.</body>";
+        
+
+    }
+    @PUT
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Produces(MediaType.TEXT_HTML)
+    public String updateBook(@FormParam("title") String title, @FormParam("author") String author, @FormParam("isbn") String isbn) {
+        
+        Book newBook = new Book(title, author, isbn);
+        JsonArrayBuilder builder = Json.createArrayBuilder();
+        JsonArray json = null;
+        try {
+            File file = new File("books.json");
+            if (file.exists()){
+                FileReader reader = new FileReader(file);
+                JsonArray data = Json.createReader(reader).readArray();
+
+                for (int i = 0; i < data.size(); i++) {
+                    JsonObject bookData = data.getJsonObject(i);
+                    Book book = null;
+                    if (bookData.getJsonString("ISBN").getString().equals(isbn)){
+                        book = newBook;
+                        newBook = null;
+                    }
+                    else{
+                        book = new Book(
+                                bookData.getJsonString("Title").getString(), 
+                                bookData.getJsonString("Author").getString(), 
+                                bookData.getJsonString("ISBN").getString()
+                        );
+                    }
+                    
+                    builder.add(
+                        Json.createObjectBuilder()
+                                .add("Title", book.getTitle())
+                                .add("Author", book.getAuthor())
+                                .add("ISBN", book.getISBN()));
+
+                }
+            }
+            if (newBook != null){
+                return "<body>Book not found</body>";
+            }
+            json = builder.build();
+            FileWriter fileWriter = new FileWriter(file);
+            JsonWriter writer = Json.createWriter(fileWriter);
+            writer.writeArray(json);
+            writer.close();
+            fileWriter.close();
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+        return "<body>Success. Click <a href='localhost:8080/RESTApplication/webresources/books'>here</a> to see all books.</body>";
         
 
     }
