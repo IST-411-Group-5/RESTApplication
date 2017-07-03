@@ -5,11 +5,9 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     </head>
     <body>
-        <a href="post.html">Add a book</a>
-        <a href="put.html">Update a book</a>
-        <a href="delete.html">Delete a book</a>
         <h1>Create and save a new book:</h1>
         <form method="POST" action="/RESTApplication/webresources/books">
+            <input type="hidden" name="_method" value="post" />
             <input type="text" placeholder="Title" name="title"><br>
             <input type="text" placeholder="Author Name" name="author"><br>
             <input type="text" placeholder="ISBN #" name="isbn"><br>

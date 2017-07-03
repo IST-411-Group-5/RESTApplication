@@ -17,6 +17,7 @@ import javax.json.JsonWriter;
 import java.io.*;
 import javax.json.JsonObject;
 import javax.ws.rs.FormParam;
+import javax.ws.rs.HeaderParam;
 /**
  * REST Web Service
  *
@@ -74,6 +75,7 @@ public class BooksResource {
     
     /*
      *POST method writes an instance of BooksResource to the server
+     *Uses the form provided in index.html
      */
     @POST
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
@@ -122,14 +124,19 @@ public class BooksResource {
         } catch (IOException e){
             e.printStackTrace();
         }
-        return "<body>Success. Click <a href='localhost:8080/RESTApplication/webresources/books'>here</a> to see all books.</body>";
+        return "<body>Success. Click <a href=\"./books\">here</a> to see all books.</body>";
         
 
     }
+    
+    /*
+    Update a book with the given title and author based on the provided isbn number.
+    Fields are provided in the header of the PUT request
+    
+    */
     @PUT
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.TEXT_HTML)
-    public String updateBook(@FormParam("title") String title, @FormParam("author") String author, @FormParam("isbn") String isbn) {
+    public String updateBook(@HeaderParam ("title") String title, @HeaderParam("author") String author, @HeaderParam("isbn") String isbn) {
         
         Book newBook = new Book(title, author, isbn);
         JsonArrayBuilder builder = Json.createArrayBuilder();
@@ -144,7 +151,7 @@ public class BooksResource {
                     JsonObject bookData = data.getJsonObject(i);
                     Book book = null;
                     if (bookData.getJsonString("ISBN").getString().equals(isbn)){
-                        book = newBook;
+                        book = new Book(title, author, isbn);
                         newBook = null;
                     }
                     else{
@@ -175,7 +182,7 @@ public class BooksResource {
         } catch (IOException e){
             e.printStackTrace();
         }
-        return "<body>Success. Click <a href='localhost:8080/RESTApplication/webresources/books'>here</a> to see all books.</body>";
+        return "<body>Success. Click <a href=\"./books\">here</a> to see all books.</body>";
         
 
     }
