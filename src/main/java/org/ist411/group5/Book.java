@@ -7,8 +7,8 @@ package org.ist411.group5;
 public class Book {
     private String title;
     private String author;
-    private long ISBN;
-    public Book(String ttl, String auth, long isbn){
+    private String ISBN;
+    public Book(String ttl, String auth, String isbn){
         title = ttl;
         author = auth;
         ISBN = isbn;
@@ -45,14 +45,14 @@ public class Book {
     /**
      * @return the ISBN
      */
-    public long getISBN() {
+    public String getISBN() {
         return ISBN;
     }
 
     /**
      * @param ISBN the ISBN to set
      */
-    public void setISBN(long ISBN) {
+    public void setISBN(String ISBN) {
         this.ISBN = ISBN;
     }
 }

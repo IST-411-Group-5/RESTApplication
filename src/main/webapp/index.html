@@ -5,6 +5,12 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     </head>
     <body>
-        <h1>Hello World!</h1>
+        <h1>Create and save a new book:</h1>
+        <form method="POST" action="/RESTApplication/webresources/books">
+            <input type="text" placeholder="Title" name="title"><br>
+            <input type="text" placeholder="Author Name" name="author"><br>
+            <input type="text" placeholder="ISBN #" name="isbn"><br>
+            <button type="submit">Submit</button>
+        </form>
     </body>
 </html>

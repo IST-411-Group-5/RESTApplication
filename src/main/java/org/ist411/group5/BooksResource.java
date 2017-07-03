@@ -18,6 +18,9 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.io.*;
+import javax.json.JsonObject;
+import javax.json.JsonValue;
+import javax.ws.rs.FormParam;
 /**
  * REST Web Service
  *
@@ -42,7 +45,24 @@ public class BooksResource {
     @GET
     @Produces(MediaType.TEXT_HTML)
     public String getHtml() {
-        return "<body>a book</body>";
+        String html = "<html><body>";
+        try {
+            FileReader reader = new FileReader("Books.json");
+            JsonArray data = Json.createReader(reader).readArray();
+            
+            for (int i = 0; i < data.size(); i++) {
+                JsonObject bookData = data.getJsonObject(i);
+                html += "<ul><li>Title: " +  bookData.getJsonString("Title").getString() + "</li>";
+                html += "<li>Author: " +  bookData.getJsonString("Author").getString() + "</li>";
+                html += "<li>ISBN: " +  bookData.getJsonString("ISBN").getString() + "</li></ul>";
+                
+            }
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
+        return html + "</body></html>";
     }
 
     /**
@@ -58,34 +78,53 @@ public class BooksResource {
      *POST method writes an instance of BooksResource to the server
      */
     @POST
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
-    public void postBook() {
-        ArrayList<Book> bookList = new ArrayList();
-        Book book1 = new Book("Brave New World", "Aldous Huxley", 9780060850524L);
-        Book book2 = new Book("Nineteen Eighty-Four", "George Orwell", 9780141182957L);
-        Book book3 = new Book("Lord of the Flies", "William Golding", 9780807218181L);
-        bookList.add(book1);
-        bookList.add(book2);
-        bookList.add(book3);
+    public JsonArray postBook(@FormParam("title") String title, @FormParam("author") String author, @FormParam("isbn") String isbn) {
         
-        JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
-        for (Book book : bookList){
-            arrayBuilder.add(
+        Book newBook = new Book(title, author, isbn);
+        JsonArrayBuilder builder = Json.createArrayBuilder();
+        JsonArray json = null;
+        try {
+            FileReader reader = new FileReader("Books.json");
+            JsonArray data = Json.createReader(reader).readArray();
+            
+            for (int i = 0; i < data.size(); i++) {
+                JsonObject bookData = data.getJsonObject(i);
+                
+                
+                Book book = new Book(
+                        bookData.getJsonString("Title").getString(), 
+                        bookData.getJsonString("Author").getString(), 
+                        bookData.getJsonString("ISBN").getString()
+                );
+                
+                 builder.add(
                     Json.createObjectBuilder()
                     .add("Title", book.getTitle())
                     .add("Author", book.getAuthor())
-                    .add("ISBN", book.getISBN())
-            );
-        }
-        JsonArray bookArray = arrayBuilder.build();
-        try {
-            OutputStream output = new FileOutputStream("Books.json");
-            JsonWriter writer = Json.createWriter(output);
-            writer.writeArray(bookArray);
-            output.close();
+                    .add("ISBN", book.getISBN()));
+                
+            }
+            
+            builder.add(
+                    Json.createObjectBuilder()
+                    .add("Title", newBook.getTitle())
+                    .add("Author", newBook.getAuthor())
+                    .add("ISBN", newBook.getISBN()));
+            
+            json = builder.build();
+
+            FileWriter fileWriter = new FileWriter("Books.json");
+            JsonWriter writer = Json.createWriter(fileWriter);
+            writer.writeArray(json);
             writer.close();
-        } catch(IOException e){
-            System.out.println("File not found!");
+            fileWriter.close();
+        } catch (IOException e){
+            e.printStackTrace();
         }
+        return json;
+        
+
     }
 }
