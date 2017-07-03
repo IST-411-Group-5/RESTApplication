@@ -14,12 +14,8 @@ import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonWriter;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
-import java.util.ArrayList;
 import java.io.*;
 import javax.json.JsonObject;
-import javax.json.JsonValue;
 import javax.ws.rs.FormParam;
 /**
  * REST Web Service
