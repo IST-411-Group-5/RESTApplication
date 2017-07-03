@@ -1,9 +1,13 @@
 package org.ist411.group5;
 
+
 /**
+ * REST Web Service
  *
- * @author Susan
+ * @author Eric Ruppert, Miao Yu, Susan Tabassum, Erik Galloway
  */
+
+
 public class Book {
     private String title;
     private String author;

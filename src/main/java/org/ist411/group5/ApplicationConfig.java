@@ -5,9 +5,11 @@ import javax.ws.rs.core.Application;
 
 
 /**
+ * REST Web Service
  *
- * @author Eric Ruppert
+ * @author Eric Ruppert, Miao Yu, Susan Tabassum, Erik Galloway
  */
+
 @javax.ws.rs.ApplicationPath("webresources")
 public class ApplicationConfig extends Application{
     @Override

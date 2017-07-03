@@ -14,17 +14,13 @@ import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonWriter;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
-import java.util.ArrayList;
 import java.io.*;
 import javax.json.JsonObject;
-import javax.json.JsonValue;
 import javax.ws.rs.FormParam;
 /**
  * REST Web Service
  *
- * @author Eric Ruppert
+ * @author Eric Ruppert, Miao Yu, Susan Tabassum, Erik Galloway
  */
 @Path("books")
 public class BooksResource {
@@ -47,17 +43,19 @@ public class BooksResource {
     public String getHtml() {
         String html = "<html><body>";
         try {
-            FileReader reader = new FileReader("Books.json");
-            JsonArray data = Json.createReader(reader).readArray();
-            
-            for (int i = 0; i < data.size(); i++) {
-                JsonObject bookData = data.getJsonObject(i);
-                html += "<ul><li>Title: " +  bookData.getJsonString("Title").getString() + "</li>";
-                html += "<li>Author: " +  bookData.getJsonString("Author").getString() + "</li>";
-                html += "<li>ISBN: " +  bookData.getJsonString("ISBN").getString() + "</li></ul>";
-                
-            }
-            
+            File file = new File("books.json");
+            if (file.exists()){
+                FileReader reader = new FileReader(file);
+                JsonArray data = Json.createReader(reader).readArray();
+
+                for (int i = 0; i < data.size(); i++) {
+                    JsonObject bookData = data.getJsonObject(i);
+                    html += "<ul><li>Title: " +  bookData.getJsonString("Title").getString() + "</li>";
+                    html += "<li>Author: " +  bookData.getJsonString("Author").getString() + "</li>";
+                    html += "<li>ISBN: " +  bookData.getJsonString("ISBN").getString() + "</li></ul>";
+
+                }
+            } 
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -79,34 +77,36 @@ public class BooksResource {
      */
     @POST
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    @Produces(MediaType.APPLICATION_JSON)
-    public JsonArray postBook(@FormParam("title") String title, @FormParam("author") String author, @FormParam("isbn") String isbn) {
+    @Produces(MediaType.TEXT_HTML)
+    public String postBook(@FormParam("title") String title, @FormParam("author") String author, @FormParam("isbn") String isbn) {
         
         Book newBook = new Book(title, author, isbn);
         JsonArrayBuilder builder = Json.createArrayBuilder();
         JsonArray json = null;
         try {
-            FileReader reader = new FileReader("Books.json");
-            JsonArray data = Json.createReader(reader).readArray();
-            
-            for (int i = 0; i < data.size(); i++) {
-                JsonObject bookData = data.getJsonObject(i);
-                
-                
-                Book book = new Book(
-                        bookData.getJsonString("Title").getString(), 
-                        bookData.getJsonString("Author").getString(), 
-                        bookData.getJsonString("ISBN").getString()
-                );
-                
-                 builder.add(
-                    Json.createObjectBuilder()
-                    .add("Title", book.getTitle())
-                    .add("Author", book.getAuthor())
-                    .add("ISBN", book.getISBN()));
-                
+            File file = new File("books.json");
+            if (file.exists()){
+                FileReader reader = new FileReader(file);
+                JsonArray data = Json.createReader(reader).readArray();
+
+                for (int i = 0; i < data.size(); i++) {
+                    JsonObject bookData = data.getJsonObject(i);
+
+
+                    Book book = new Book(
+                            bookData.getJsonString("Title").getString(), 
+                            bookData.getJsonString("Author").getString(), 
+                            bookData.getJsonString("ISBN").getString()
+                    );
+
+                     builder.add(
+                        Json.createObjectBuilder()
+                        .add("Title", book.getTitle())
+                        .add("Author", book.getAuthor())
+                        .add("ISBN", book.getISBN()));
+
+                }
             }
-            
             builder.add(
                     Json.createObjectBuilder()
                     .add("Title", newBook.getTitle())
@@ -114,8 +114,7 @@ public class BooksResource {
                     .add("ISBN", newBook.getISBN()));
             
             json = builder.build();
-
-            FileWriter fileWriter = new FileWriter("Books.json");
+            FileWriter fileWriter = new FileWriter(file);
             JsonWriter writer = Json.createWriter(fileWriter);
             writer.writeArray(json);
             writer.close();
@@ -123,7 +122,7 @@ public class BooksResource {
         } catch (IOException e){
             e.printStackTrace();
         }
-        return json;
+        return "<body>Success</body>";
         
 
     }
