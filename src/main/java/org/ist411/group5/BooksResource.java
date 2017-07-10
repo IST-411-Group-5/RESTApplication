@@ -1,5 +1,10 @@
 package org.ist411.group5;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.Consumes;
@@ -25,6 +30,7 @@ import javax.ws.rs.HeaderParam;
  * @author Eric Ruppert, Miao Yu, Susan Tabassum, Erik Galloway
  */
 @Path("books")
+@Api(value = "books")
 public class BooksResource {
 
     @Context
@@ -40,6 +46,14 @@ public class BooksResource {
      * Retrieves representation of an instance of org.ist411.group5.BooksResource
      * @return an instance of java.lang.String
      */
+    @ApiOperation(value = "Retrieve a full list of books",
+            notes = "No parameters requires",
+            response = Book.class,
+            responseContainer = "List")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "Successful Request"),
+        @ApiResponse(code = 404, message = "No books found")
+    })
     @GET
     @Produces(MediaType.TEXT_HTML)
     public String getHtml() {
