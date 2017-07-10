@@ -1,0 +1,55 @@
+#%RAML 1.0
+title: Raml API generated from classes
+version: 1.0
+baseUri: http://www.baseuri.com
+mediaType: "*/*"
+/books:
+    get:
+        responses:
+            200:
+                body:
+                    text/html:
+                        type: string
+    put:
+        body:
+            type: string
+    post:
+        body:
+            application/x-www-form-urlencoded:
+                type:
+                    properties:
+                        title: string
+                        author: string
+                        isbn: string
+        responses:
+            200:
+                body:
+                    text/html:
+                        type: string
+    put:
+        responses:
+            200:
+                body:
+                    text/html:
+                        type: string
+        headers:
+            title:
+                type: string
+            author:
+                type: string
+            isbn:
+                type: string
+    delete:
+        body:
+            application/x-www-form-urlencoded:
+                type:
+                    properties:
+                        title: string
+                        author: string
+                        isbn: string
+        responses:
+            200:
+                body:
+                    text/html:
+                        type: string
+types:
