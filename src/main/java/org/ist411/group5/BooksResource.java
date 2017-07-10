@@ -79,19 +79,18 @@ public class BooksResource {
         return html + "</body></html>";
     }
 
-    /**
-     * PUT method for updating or creating an instance of BooksResource
-     * @param content representation for the resource
-     */
-    @PUT
-    @Consumes(MediaType.TEXT_HTML)
-    public void putHtml(String content) {
-    }
     
     /*
      *POST method writes an instance of BooksResource to the server
      *Uses the form provided in index.html
      */
+    @ApiOperation(value = "Create a book with the Form Parameters provided",
+            notes = "Title, Author and ISBN number",
+            response = String.class)
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "Successful Request"),
+        @ApiResponse(code = 404, message = "Problem creating a book")
+    })
     @POST
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.TEXT_HTML)
@@ -149,6 +148,13 @@ public class BooksResource {
     Fields are provided in the header of the PUT request
     
     */
+    @ApiOperation(value = "Update a book in the table",
+            notes = "Tile, Author and ISBN are required",
+            response = String.class)
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "Successful Request"),
+        @ApiResponse(code = 404, message = "No book found")
+    })
     @PUT
     @Produces(MediaType.TEXT_HTML)
     public String updateBook(@HeaderParam ("title") String title, @HeaderParam("author") String author, @HeaderParam("isbn") String isbn) {
@@ -201,7 +207,13 @@ public class BooksResource {
         
 
     }
-    
+    @ApiOperation(value = "Delete a book from the table",
+            notes = "The book needs to be explicitly defined",
+            response = String.class)
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "Successful Request"),
+        @ApiResponse(code = 404, message = "No book found")
+    })
     @DELETE
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.TEXT_HTML)
