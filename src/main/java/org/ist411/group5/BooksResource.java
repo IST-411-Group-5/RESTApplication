@@ -16,6 +16,7 @@ import javax.json.JsonArrayBuilder;
 import javax.json.JsonWriter;
 import java.io.*;
 import javax.json.JsonObject;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.HeaderParam;
 /**
@@ -183,6 +184,52 @@ public class BooksResource {
             e.printStackTrace();
         }
         return "<body>Success. Click <a href=\"./books\">here</a> to see all books.</body>";
+        
+
+    }
+    
+    @DELETE
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Produces(MediaType.TEXT_HTML)
+    public String deleteBook(@FormParam("title") String title, @FormParam("author") String author, @FormParam("isbn") String isbn) {
+        
+        Book newBook = new Book(title, author, isbn);
+        JsonArrayBuilder builder = Json.createArrayBuilder();
+        JsonArray json = null;
+        boolean found = false;
+        try {
+            File file = new File("books.json");
+            if (file.exists()){
+                FileReader reader = new FileReader(file);
+                JsonArray data = Json.createReader(reader).readArray();
+                
+                for (int i = 0; i < data.size(); i++) {
+                    JsonObject bookData = data.getJsonObject(i);
+                    if (!bookData.getJsonString("ISBN").getString().equals(isbn)){
+                        builder.add(
+                        Json.createObjectBuilder()
+                                .add("Title", bookData.getJsonString("Title").getString())
+                                .add("Author", bookData.getJsonString("Author").getString())
+                                .add("ISBN", bookData.getJsonString("ISBN").getString()));
+                    } else {
+                        found = true;
+                    }
+                }
+            }
+            if (!found){
+                return "<body>Book not found</body>";
+            } 
+            json = builder.build();
+            FileWriter fileWriter = new FileWriter(file);
+            JsonWriter writer = Json.createWriter(fileWriter);
+            writer.writeArray(json);
+            writer.close();
+            fileWriter.close();
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+        
+        return "<body>Success. Click <a href='localhost:8080/RESTApplication/webresources/books'>here</a> to see all books.</body>";
         
 
     }
